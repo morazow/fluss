@@ -18,7 +18,7 @@
 
 suite: sasl-disabled-secret
 templates:
-  - templates/secret-sasl.yaml
+  - templates/secret-jaas-config.yaml
 tests:
   - it: does not render sasl secret when sasl is disabled
     set:
@@ -58,7 +58,7 @@ tests:
 
 suite: sasl-enabled-generated-secret
 templates:
-  - templates/secret-sasl.yaml
+  - templates/secret-jaas-config.yaml
 tests:
   - it: renders generated sasl secret when sasl is enabled
     set:
@@ -70,6 +70,31 @@ tests:
       - matchRegex:
           path: metadata.name
           pattern: ^RELEASE-NAME-fluss-sasl-jaas-config$
+      - matchRegex:
+          path: stringData["jaas.conf"]
+          pattern: 'FlussServer\s*\{'
+      - matchRegex:
+          path: stringData["jaas.conf"]
+          pattern: 'FlussClient\s*\{'
+---
+
+suite: sasl-enabled-secret-with-plaintext-internal
+templates:
+  - templates/secret-jaas-config.yaml
+tests:
+  - it: does not include FlussClient section when internal listener is not SASL
+    set:
+      listeners.internal.protocol: PLAINTEXT
+      listeners.client.protocol: SASL_PLAINTEXT
+    asserts:
+      - hasDocuments:
+          count: 1
+      - matchRegex:
+          path: stringData["jaas.conf"]
+          pattern: 'FlussServer\s*\{'
+      - notMatchRegex:
+          path: stringData["jaas.conf"]
+          pattern: 'FlussClient\s*\{'
 ---
 
 suite: sasl-enabled-statefulset-uses-generated-secret
