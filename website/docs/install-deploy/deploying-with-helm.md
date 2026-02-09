@@ -229,8 +229,7 @@ The following table lists the configurable parameters of the Fluss chart, and th
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `sasl.mechanism` | SASL mechanism | `PLAIN` |
-| `sasl.users` | User list for PLAIN authentication | `[{username: admin, password: password}]` |
+| `security.sasl_plain.users` | User list for PLAIN authentication | `[{username: admin, password: password}]` |
 
 ## Advanced Configuration
 
@@ -283,14 +282,14 @@ The SASL authentication will be enabled if any of the listener protocols is usin
 Set these values for additional configurations:
 
 ```yaml
-sasl:
-  mechanism: PLAIN
-  users:
-    - username: admin
-      password: password
+security:
+  sasl_plain:
+    users:
+      - username: admin
+        password: password
 ```
 
-The `users` field defines the list of usernames and passwords for SASL authentication. The first user in the list is used for internal client authentication in the chart templates.
+The `security.sasl_plain.users` field defines the list of usernames and passwords for SASL/PLAIN authentication. The first user in the list is used for internal client authentication in the chart templates. The mechanism is fixed to `PLAIN`.
 
 ### Storage Configuration
 

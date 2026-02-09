@@ -69,16 +69,12 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Generate JAAS configuration for SASL
 */}}
 {{- define "fluss.sasl.jaasConfig" -}}
-{{- if .Values.sasl.jaasConfig }}
-{{- .Values.sasl.jaasConfig -}}
-{{- else }}
 FlussServer {
    org.apache.fluss.security.auth.sasl.plain.PlainLoginModule required
-   {{- range .Values.sasl.users }}
+   {{- range .Values.security.sasl_plain.users }}
    user_{{ .username }}="{{ .password }}"
    {{- end }};
 };
-{{- end }}
 {{- end }}
 
 {{/*

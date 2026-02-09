@@ -100,10 +100,10 @@ tests:
     set:
       listeners.internal.protocol: SASL_PLAINTEXT
       listeners.client.protocol: SASL_PLAINTEXT
-      sasl.users: []
+      security.sasl_plain.users: []
     asserts:
       - failedTemplate:
-          errorMessage: sasl.users must contain at least one user when SASL is enabled in listeners
+          errorMessage: security.sasl_plain.users must contain at least one user when SASL is enabled in listeners
 ---
 
 suite: server-yaml-write-path

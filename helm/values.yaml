@@ -95,11 +95,11 @@ serviceAccount:
   # These can be useful, for example, to support integrations like workload identity.
   annotations: {}
 
-## Fluss SASL configurations for authentication.
+## Fluss security configurations for authentication.
 ## These are required if SASL listeners are configured.
-sasl:
-  mechanism: PLAIN
-  # List of client users for authentication
-  users:
-    - username: admin
-      password: password
+security:
+  sasl_plain:
+    # List of client users for authentication
+    users:
+      - username: admin
+        password: password
