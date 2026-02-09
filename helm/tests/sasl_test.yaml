@@ -101,7 +101,7 @@ suite: sasl-enabled-statefulset-uses-generated-secret
 templates:
   - templates/sts-coordinator.yaml
 tests:
-  - it: references generated secret and renders sasl config lines
+  - it: references generated secret and wires JVM JAAS config
     set:
       listeners.internal.protocol: SASL_PLAINTEXT
       listeners.client.protocol: SASL_PLAINTEXT
@@ -114,12 +114,12 @@ tests:
               secretName: RELEASE-NAME-fluss-sasl-jaas-config
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
-          pattern: 'security\.sasl\.plain\.jaas\.config:'
+          pattern: 'FLUSS_ENV_JAVA_OPTS="-Djava\.security\.auth\.login\.config=/etc/fluss/conf/jaas\.conf \$\{FLUSS_ENV_JAVA_OPTS\}"'
 ---
 
 suite: sasl-empty-users-fails
 templates:
-  - templates/sts-coordinator.yaml
+  - templates/secret-jaas-config.yaml
 tests:
   - it: fails with clear message when sasl users are empty
     set:

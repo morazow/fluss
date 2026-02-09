@@ -77,22 +77,10 @@ spec:
               echo "security.protocol.map: INTERNAL:{{ upper .Values.listeners.internal.protocol }},CLIENT:{{ upper .Values.listeners.client.protocol }}" >> $FLUSS_HOME/conf/server.yaml && \
 
               {{- if (include "fluss.sasl.enabled" .) }}
-              {{- $saslUsers := default (list) .Values.security.sasl_plain.users -}}
-              {{- if eq (len $saslUsers) 0 -}}
-              {{- fail "security.sasl_plain.users must contain at least one user when SASL is enabled in listeners" -}}
-              {{- end }}
-              {{- $jaasUsers := list -}}
-              {{- range $saslUsers }}
-              {{- $jaasUsers = append $jaasUsers (printf "user_%s=\\\"%s\\\"" .username .password) -}}
-              {{- end }}
-              {{- $clientUser := first $saslUsers -}}
               echo "security.sasl.enabled.mechanisms: PLAIN" >> $FLUSS_HOME/conf/server.yaml && \
-              echo "security.sasl.plain.jaas.config: org.apache.fluss.security.auth.sasl.plain.PlainLoginModule required {{ join " " $jaasUsers }};" >> $FLUSS_HOME/conf/server.yaml && \
-
               echo "client.security.protocol: SASL" >> $FLUSS_HOME/conf/server.yaml && \
               echo "client.security.sasl.mechanism: PLAIN" >> $FLUSS_HOME/conf/server.yaml && \
-              echo "client.security.sasl.username: {{ $clientUser.username }}" >> $FLUSS_HOME/conf/server.yaml && \
-              echo "client.security.sasl.password: {{ $clientUser.password }}" >> $FLUSS_HOME/conf/server.yaml && \
+              export FLUSS_ENV_JAVA_OPTS="-Djava.security.auth.login.config=/etc/fluss/conf/jaas.conf ${FLUSS_ENV_JAVA_OPTS}" && \
               {{- end }}
 
               bin/tablet-server.sh start-foreground
