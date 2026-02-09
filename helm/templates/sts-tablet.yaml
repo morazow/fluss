@@ -74,7 +74,7 @@ spec:
               echo "tablet-server.id: ${FLUSS_SERVER_ID}" >> $FLUSS_HOME/conf/server.yaml && \
               echo "bind.listeners: ${BIND_LISTENERS}" >> $FLUSS_HOME/conf/server.yaml && \
               echo "advertised.listeners: ${ADVERTISED_LISTENERS}" >> $FLUSS_HOME/conf/server.yaml && \
-              echo "security.protocol.map: {{ include "fluss.listeners.securityProtocolMap" . }}" >> $FLUSS_HOME/conf/server.yaml && \
+              echo "security.protocol.map: INTERNAL:{{ upper .Values.listeners.internal.protocol }},CLIENT:{{ upper .Values.listeners.client.protocol }}" >> $FLUSS_HOME/conf/server.yaml && \
 
               {{- if (include "fluss.sasl.enabled" .) }}
               {{- $saslUsers := default (list) .Values.security.sasl_plain.users -}}

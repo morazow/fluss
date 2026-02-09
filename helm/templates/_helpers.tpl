@@ -91,18 +91,3 @@ Return true if SASL is configured in any of the listener protocols
 {{- true -}}
 {{- end -}}
 {{- end -}}
-
-{{/*
-Generate ID:SECURITY list for listener protocols
-*/}}
-{{- define "fluss.listeners.securityProtocolMap" -}}
-{{- $ctx := . -}}
-{{- $parts := list -}}
-{{- $keys := keys .Values.listeners | sortAlpha -}}
-{{- range $keys }}
-  {{- $id := . -}}
-  {{- $l := index $ctx.Values.listeners $id -}}
-  {{- $parts = append $parts (printf "%s:%s" (upper $id) (upper $l.protocol)) -}}
-{{- end -}}
-{{- join "," $parts -}}
-{{- end }}
