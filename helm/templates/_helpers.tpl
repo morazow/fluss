@@ -64,18 +64,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "fluss.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Return true if SASL is configured in any of the listener protocols
-*/}}
-{{- define "fluss.sasl.enabled" -}}
-{{- $enabled := false -}}
-{{- range $id, $l := .Values.listeners -}}
-  {{- if and (not $enabled) (regexFind "SASL" (upper $l.protocol)) -}}
-    {{- $enabled = true -}}
-  {{- end -}}
-{{- end -}}
-{{- if $enabled -}}
-{{- true -}}
-{{- end -}}
-{{- end -}}
