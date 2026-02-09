@@ -84,18 +84,14 @@ FlussServer {
 {{/*
 Return true if SASL is configured in any of the listener protocols
 */}}
-{{- define "fluss.isSaslEnabled" -}}
-{{- $ctx := . -}}
-{{- $res := "" -}}
-{{- $keys := keys .Values.listeners | sortAlpha -}}
-{{- range $keys }}
-  {{- $id := . -}}
-  {{- $l := index $ctx.Values.listeners $id -}}
-  {{- if regexFind "SASL" (upper $l.protocol) -}}
-    {{- $res = "true" -}}
+{{- define "fluss.sasl.enabled" -}}
+{{- $enabled := false -}}
+{{- range $id, $l := .Values.listeners -}}
+  {{- if and (not $enabled) (regexFind "SASL" (upper $l.protocol)) -}}
+    {{- $enabled = true -}}
   {{- end -}}
 {{- end -}}
-{{- if $res -}}
+{{- if $enabled -}}
 {{- true -}}
 {{- end -}}
 {{- end -}}
@@ -103,7 +99,7 @@ Return true if SASL is configured in any of the listener protocols
 {{/*
 Generate ID:SECURITY list for listener protocols
 */}}
-{{- define "fluss.listeners.protocolMap" -}}
+{{- define "fluss.listeners.securityProtocolMap" -}}
 {{- $ctx := . -}}
 {{- $parts := list -}}
 {{- $keys := keys .Values.listeners | sortAlpha -}}

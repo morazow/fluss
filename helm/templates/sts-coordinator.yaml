@@ -77,9 +77,9 @@ spec:
               echo "" >> $FLUSS_HOME/conf/server.yaml && \
               echo "bind.listeners: ${BIND_LISTENERS}" >> $FLUSS_HOME/conf/server.yaml && \
               echo "advertised.listeners: ${ADVERTISED_LISTENERS}" >> $FLUSS_HOME/conf/server.yaml && \
-              echo "security.protocol.map: {{ include "fluss.listeners.protocolMap" . }}" >> $FLUSS_HOME/conf/server.yaml && \
+              echo "security.protocol.map: {{ include "fluss.listeners.securityProtocolMap" . }}" >> $FLUSS_HOME/conf/server.yaml && \
 
-              {{- if (include "fluss.isSaslEnabled" .) }}
+              {{- if (include "fluss.sasl.enabled" .) }}
               {{- $saslUsers := default (list) .Values.sasl.users -}}
               {{- if eq (len $saslUsers) 0 -}}
               {{- fail "sasl.users must contain at least one user when SASL is enabled in listeners" -}}
@@ -120,7 +120,7 @@ spec:
               mountPath: /opt/conf
             - name: data
               mountPath: /tmp/fluss/data
-            {{- if (include "fluss.isSaslEnabled" .) }}
+            {{- if (include "fluss.sasl.enabled" .) }}
             - name: sasl-config
               mountPath: /etc/fluss/conf
               readOnly: true
@@ -133,7 +133,7 @@ spec:
         - name: data
           emptyDir: {}
         {{- end }}
-        {{- if (include "fluss.isSaslEnabled" .) }}
+        {{- if (include "fluss.sasl.enabled" .) }}
         - name: sasl-config
           secret:
             secretName: {{ include "fluss.fullname" . }}-sasl-jaas-config

@@ -23,7 +23,6 @@ permissions:
 
 on:
   pull_request:
-    branches: [main, release-*, ci-*]
     paths:
       - 'helm/**'
       - '.github/workflows/helm-chart.yaml'
@@ -45,15 +44,11 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v6
 
-      - name: "Setup Helm"
-        uses: azure/setup-helm@v4
+      - name: "Run helm-unittest"
+        uses: d3adb5/helm-unittest-action@v2
+        with:
+          helm-version: latest
+          charts: helm
 
       - name: "Lint Helm chart"
         run: helm lint ./helm
-
-      - name: "Run helm-unittest"
-        run: |
-          docker run --rm \
-            -u "$(id -u):$(id -g)" \
-            -v "${{ github.workspace }}":/apps \
-            helmunittest/helm-unittest helm/
