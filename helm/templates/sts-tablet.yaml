@@ -78,8 +78,10 @@ spec:
 
               {{- if (include "fluss.sasl.enabled" .) }}
               echo "security.sasl.enabled.mechanisms: PLAIN" >> $FLUSS_HOME/conf/server.yaml && \
+              {{ if regexFind "SASL" (upper .Values.listeners.internal.protocol) }}
               echo "client.security.protocol: SASL" >> $FLUSS_HOME/conf/server.yaml && \
               echo "client.security.sasl.mechanism: PLAIN" >> $FLUSS_HOME/conf/server.yaml && \
+              {{ end }}
               export FLUSS_ENV_JAVA_OPTS="-Djava.security.auth.login.config=/etc/fluss/conf/jaas.conf ${FLUSS_ENV_JAVA_OPTS}" && \
               {{- end }}
 

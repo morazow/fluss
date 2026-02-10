@@ -289,7 +289,7 @@ security:
         password: password
 ```
 
-The `security.sasl_plain.users` field defines the list of usernames and passwords for SASL/PLAIN authentication. The first user in the list is used for internal client authentication in the chart templates. The mechanism is fixed to `PLAIN`.
+The `security.sasl_plain.users` field defines the list of usernames and passwords for SASL/PLAIN authentication. When the internal listener protocol uses SASL, the first user in the list is used for internal client authentication. The authentication mechanism is fixed to `PLAIN`.
 
 ### Storage Configuration
 

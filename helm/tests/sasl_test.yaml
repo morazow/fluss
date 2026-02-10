@@ -115,6 +115,64 @@ tests:
       - matchRegex:
           path: spec.template.spec.containers[0].command[2]
           pattern: 'FLUSS_ENV_JAVA_OPTS="-Djava\.security\.auth\.login\.config=/etc/fluss/conf/jaas\.conf \$\{FLUSS_ENV_JAVA_OPTS\}"'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.protocol: SASL'
+---
+
+suite: sasl-enabled-statefulset-internal-plaintext
+templates:
+  - templates/sts-coordinator.yaml
+  - templates/sts-tablet.yaml
+tests:
+  - it: does not render internal client sasl config when internal listener is plaintext
+    set:
+      listeners.internal.protocol: PLAINTEXT
+      listeners.client.protocol: SASL_PLAINTEXT
+    template: templates/sts-coordinator.yaml
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'security\.sasl\.enabled\.mechanisms: PLAIN'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.protocol: SASL'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.sasl\.mechanism: PLAIN'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.sasl\.username:'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.sasl\.password:'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'FLUSS_ENV_JAVA_OPTS="-Djava\.security\.auth\.login\.config=/etc/fluss/conf/jaas\.conf \$\{FLUSS_ENV_JAVA_OPTS\}"'
+  - it: does not render internal client sasl config for tablet when internal listener is plaintext
+    set:
+      listeners.internal.protocol: PLAINTEXT
+      listeners.client.protocol: SASL_PLAINTEXT
+    template: templates/sts-tablet.yaml
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'security\.sasl\.enabled\.mechanisms: PLAIN'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.protocol: SASL'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.sasl\.mechanism: PLAIN'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.sasl\.username:'
+      - notMatchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'client\.security\.sasl\.password:'
+      - matchRegex:
+          path: spec.template.spec.containers[0].command[2]
+          pattern: 'FLUSS_ENV_JAVA_OPTS="-Djava\.security\.auth\.login\.config=/etc/fluss/conf/jaas\.conf \$\{FLUSS_ENV_JAVA_OPTS\}"'
 ---
 
 suite: sasl-empty-users-fails
