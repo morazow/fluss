@@ -54,13 +54,6 @@ coordinator:
 # Fluss listener configurations
 listeners:
   internal:
-    port: 9123
-  client:
-    port: 9124
-
-# Fluss listener configurations
-listeners:
-  internal:
     protocol: PLAINTEXT
     port: 9123
   client:
